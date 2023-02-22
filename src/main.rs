@@ -1,4 +1,7 @@
 
+use indicatif::{ProgressBar, ProgressBarIter};
+use rand::Rng;
+
 type Rgb = (u8,u8,u8);
 
 pub trait PPM {
@@ -11,16 +14,38 @@ pub struct Image {
     pub data: Vec<Vec<Rgb>>,
     pub width: usize,
     pub height: usize,
+    pub total_pixels: u64,
 }
 impl Image {
     pub fn new(data: Vec<Vec<Rgb>>) -> Self {
-	Image { width: data[0].len(), height: data.len(), data}
+	let total = data.iter().flatten().count() as u64;
+	Image { width: data[0].len(), height: data.len(), total_pixels: total, data}
 
+    }
+
+    pub fn sample(dim: u64) -> Self {
+	// Produce 256x256 image
+	let pb = ProgressBar::new(dim).with_message("Generating sample image");
+	let mut rng = rand::thread_rng();
+	let mut img: Vec<Vec<Rgb>> = Vec::new();
+	for _ in 0..=dim{
+	    pb.inc(1);
+	    let mut row: Vec<(u8,u8,u8)> = Vec::new();
+	    for _ in 0..=dim {
+		row.push((fastrand::u8(..), fastrand::u8(..),fastrand::u8(..)));
+	    }
+	    img.push(row);
+	}
+	Image::new(img)
+	  
     }
 }
 
 impl PPM for Image {
     fn to_disk(&self) {
+	if self.total_pixels > 500000000/4 {
+	    panic!("Tried to write 500M image!");
+	}
 	std::fs::write("foobar.ppm", self.to_string()).unwrap();
     }
 
@@ -29,26 +54,28 @@ impl PPM for Image {
     }
 
     fn to_string(&self) -> String {
+	
+	let pb = ProgressBar::new(self.total_pixels).with_message("Saving to .ppm");
+
         let mut s = String::new();
         s.push_str("P3\n");
         s.push_str(&format!("{} {}", self.width, self.height));
         s.push_str("\n255\n"); // MAX colour
-        self.data
-            .iter()
-            .flatten()
-            .map(|pxl| format!("{} {} {}", pxl.0, pxl.1, pxl.2))
-            .collect::<Vec<String>>()
-            .chunks(self.width)
-            .for_each(|f| s.push_str(&format!("{}\n", f.join(" "))));
+
+	for px in self.data.iter().flatten(){
+	    pb.inc(1);
+	    s.push_str(&format!("{} {} {}\n", px.0, px.1, px.2));
+	}
+	
         s
+
+	
+	
+
     }
 }
 
 fn main() {
-    let img: Vec<Vec<(u8, u8, u8)>> = vec![
-        vec![(255, 0, 0), (0, 255, 0), (0, 0, 255)],
-        vec![(255, 255, 0), (255, 255, 255), (0, 0, 0)],
-    ];
-    let i  = Image::new(img);
+    let i  = Image::sample(15000);
     i.to_disk();
 }
