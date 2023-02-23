@@ -62,7 +62,7 @@ impl std::ops::Add for Vec3 {
     }
 }
 
-impl std::ops::Sub for Vec3{
+impl std::ops::Sub for Vec3 {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
@@ -73,7 +73,6 @@ impl std::ops::Sub for Vec3{
         }
     }
 }
-
 
 impl PPM for Image {
     fn to_disk(&self) {
