@@ -1,5 +1,8 @@
 name: Rust
+<<<<<<< HEAD
 on: push
+=======
+>>>>>>> 2b77991 (Update rust.yml)
 
 env:
   CARGO_TERM_COLOR: always
