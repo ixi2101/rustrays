@@ -41,6 +41,13 @@ impl Image {
     }
 }
 
+pub struct vec3 {
+    pub x: i32,
+    pub y: i32,
+    pub z: i32,
+}
+
+
 impl PPM for Image {
     fn to_disk(&self) {
 	if self.total_pixels > 500000000/4 {
