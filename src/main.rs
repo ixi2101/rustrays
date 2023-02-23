@@ -50,6 +50,7 @@ pub struct Vec3 {
     pub z: i32,
 }
 
+// impl basic ops
 impl std::ops::Add for Vec3 {
     type Output = Self;
 
