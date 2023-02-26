@@ -1,7 +1,8 @@
 use indicatif::{ProgressBar, ProgressBarIter};
 use rand::Rng;
+use rustrays::vec3;
+type Rgb = vec3::Vec3;
 
-type Rgb = (u8, u8, u8);
 
 pub trait PPM {
     fn to_disk(&self);
@@ -33,9 +34,14 @@ impl Image {
         let mut img: Vec<Vec<Rgb>> = Vec::new();
         for _ in 0..=dim {
             pb.inc(1);
-            let mut row: Vec<(u8, u8, u8)> = Vec::new();
+            let mut row: Vec<Rgb> = Vec::new();
             for _ in 0..=dim {
-                row.push((fastrand::u8(..), fastrand::u8(..), fastrand::u8(..)));
+                row.push(
+		    vec3::Vec3{
+			x: fastrand::f32(),
+			y: fastrand::f32(),
+			z: fastrand::f32(),
+		    });
             }
             img.push(row);
         }
@@ -46,7 +52,6 @@ impl Image {
 impl PPM for Image {
     fn to_disk(&self) {
         if self.total_pixels > 500000000 / 4 {
-            panic!("Tried to write 500M image!");
         }
         std::fs::write("foobar.ppm", self.to_string()).unwrap();
     }
@@ -65,14 +70,14 @@ impl PPM for Image {
 
         for px in self.data.iter().flatten() {
             pb.inc(1);
-            s.push_str(&format!("{} {} {}\n", px.0, px.1, px.2));
-        }
+            s.push_str(&px.colour_fmt());
+	}
 
         s
     }
 }
 
 fn main() {
-    let i = Image::sample(15000);
+    let i = Image::sample(1000);
     i.to_disk();
 }

@@ -1,3 +1,5 @@
+use std::fmt::format;
+
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vec3 {
     pub x: f32,
@@ -34,6 +36,7 @@ macro_rules! vecAdd {
 }
 
 vecAdd!(i32);
+vecAdd!(u8);
 vecAdd!(f32);
 
 impl std::ops::Sub for Vec3 {
@@ -122,6 +125,7 @@ macro_rules! vecMult {
 }
 vecMult!(i32);
 vecMult!(f32);
+vecMult!(u8);
 
 impl Vec3 {
     pub fn length(&self) -> f32 {
@@ -145,7 +149,16 @@ impl Vec3 {
     }
 
     pub fn unit_vec(&self) -> Self {
-	*self / self.length()
+        *self / self.length()
+    }
+
+    /// Expects colour to be 0 ---> 1
+    pub fn colour_fmt(&self) -> String {
+        let col = *self * u8::MAX;
+        assert!(col.x <= 255.0, "Colour out of bounds");
+        assert!(col.y <= 255.0, "Colour out of bounds");
+        assert!(col.z <= 255.0, "Colour out of bounds");
+        format!("{} {} {}", col.x, col.y, col.z)
     }
 }
 
@@ -201,7 +214,7 @@ mod tests {
             z: 5.0,
         };
         let b = 10;
-        let c = a + b;
+        let c: Vec3 = a + b;
         assert_eq!(c.x, 13.0);
         assert_eq!(c.y, 14.0);
         assert_eq!(c.z, 15.0);
@@ -265,7 +278,7 @@ mod tests {
             z: 5.0,
         };
         let b = 10;
-        let c = a * b;
+        let c: Vec3 = a * b;
         assert_eq!(c.x, 30.0);
         assert_eq!(c.y, 40.0);
         assert_eq!(c.z, 50.0);
@@ -366,12 +379,33 @@ mod tests {
             y: 2.0,
             z: 3.0,
         };
-	let c = a.unit_vec();
-	let c_expt = Vec3{
+        let c = a.unit_vec();
+        let c_expt = Vec3 {
             x: 1.0 / 14_f32.sqrt(),
             y: 2.0 / 14_f32.sqrt(),
             z: 3.0 / 14_f32.sqrt(),
-	};
-	assert_eq!(c, c_expt);
+        };
+        assert_eq!(c, c_expt);
+    }
+    #[test]
+    fn test_col_format1() {
+        let a = Vec3 {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        };
+        let b = a.colour_fmt();
+        assert_eq!(b, String::from("0 0 0"));
+    }
+
+    #[test]
+    fn test_col_format2() {
+        let a = Vec3 {
+            x: 1.0,
+            y: 1.0,
+            z: 1.0,
+        };
+        let b = a.colour_fmt();
+        assert_eq!(b, String::from("255 255 255"));
     }
 }
