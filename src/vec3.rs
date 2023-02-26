@@ -132,19 +132,18 @@ impl Vec3 {
         (self.x * self.x) + (self.y * self.y) + (self.z * self.z)
     }
 
-    pub fn dot(lhs: &Vec3,rhs: &Vec3) -> f32{
-	lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z
+    pub fn dot(lhs: &Vec3, rhs: &Vec3) -> f32 {
+        lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z
     }
 
-    pub fn cross(lhs: &Vec3,rhs: &Vec3) -> Vec3{
-	Vec3 { x: lhs.y * rhs.z - lhs.z * rhs.y,
-	       y: lhs.z * rhs.x - lhs.x * rhs.z,
-	       z: lhs.x * rhs.y - lhs.y * rhs.x,
-	}
+    pub fn cross(lhs: &Vec3, rhs: &Vec3) -> Vec3 {
+        Vec3 {
+            x: lhs.y * rhs.z - lhs.z * rhs.y,
+            y: lhs.z * rhs.x - lhs.x * rhs.z,
+            z: lhs.x * rhs.y - lhs.y * rhs.x,
+        }
     }
 }
-
-
 
 #[cfg(test)]
 mod tests {
@@ -331,8 +330,8 @@ mod tests {
             z: 5.0,
         };
 
-	let c = Vec3::dot(&a, &b);
-	assert_eq!(c, 56.0);
+        let c = Vec3::dot(&a, &b);
+        assert_eq!(c, 56.0);
     }
     #[test]
     fn test_cross_product() {
@@ -347,9 +346,12 @@ mod tests {
             z: 5.0,
         };
 
-	let c = Vec3::cross(&a, &b);
-	let c_expt = Vec3 {x: -2.0, y: 4.0, z: -2.0};
-	assert_eq!(c, c_expt);
-	    
+        let c = Vec3::cross(&a, &b);
+        let c_expt = Vec3 {
+            x: -2.0,
+            y: 4.0,
+            z: -2.0,
+        };
+        assert_eq!(c, c_expt);
     }
 }
