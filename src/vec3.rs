@@ -143,6 +143,10 @@ impl Vec3 {
             z: lhs.x * rhs.y - lhs.y * rhs.x,
         }
     }
+
+    pub fn unit_vec(&self) -> Self {
+	*self / self.length()
+    }
 }
 
 #[cfg(test)]
@@ -353,5 +357,21 @@ mod tests {
             z: -2.0,
         };
         assert_eq!(c, c_expt);
+    }
+
+    #[test]
+    fn test_unit_vec() {
+        let a = Vec3 {
+            x: 1.0,
+            y: 2.0,
+            z: 3.0,
+        };
+	let c = a.unit_vec();
+	let c_expt = Vec3{
+            x: 1.0 / 14_f32.sqrt(),
+            y: 2.0 / 14_f32.sqrt(),
+            z: 3.0 / 14_f32.sqrt(),
+	};
+	assert_eq!(c, c_expt);
     }
 }
