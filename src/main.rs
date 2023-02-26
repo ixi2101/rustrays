@@ -75,6 +75,40 @@ impl std::ops::Sub for Vec3 {
     }
 }
 
+impl std::ops::Div<i32> for Vec3 {
+    type Output = Self;
+
+    fn div(self, rhs: i32) -> Self::Output {
+        Self {
+            x: self.x / rhs,
+            y: self.y / rhs,
+            z: self.z / rhs,
+        }
+    }
+}
+
+impl std::ops::Mul<i32> for Vec3 {
+    type Output = Self;
+
+    fn mul(self, rhs: i32) -> Self::Output {
+        Self {
+            x: self.x * rhs,
+            y: self.y * rhs,
+            z: self.z * rhs,
+        }
+    }
+}
+
+impl Vec3{
+    pub fn length(&self) -> f32 {
+	(self.length_squared() as f32).sqrt()
+    }
+
+    pub fn length_squared(&self) -> i32 {
+	(self.x * self.x) + (self.y * self.y) + (self.z * self.z) 
+    }
+}
+
 impl PPM for Image {
     fn to_disk(&self) {
         if self.total_pixels > 500000000 / 4 {
