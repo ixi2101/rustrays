@@ -1,0 +1,11 @@
+name: RPM Static Build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: RPM Build
+      uses: ebbflow-io/cargo-rpm-amd64-fedora@1.1
